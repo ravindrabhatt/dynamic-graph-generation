@@ -1,0 +1,14 @@
+line.axis {
+    stroke-width: 1;
+    stroke: #000000;
+}
+
+line.grid {
+    stroke-width: 1;
+    stroke: #cccccc;
+    stroke-dasharray: 2 2;
+}
+
+text.caption {
+    fill: #000000;
+}
