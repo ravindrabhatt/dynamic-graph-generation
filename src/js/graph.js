@@ -1,3 +1,5 @@
+var MIN_RADIUS = 10;
+var MAX_RADIUS = 100;
 
 var generateGraph = function(tableArray) {
     var headerRow =  tableArray[0];
@@ -7,22 +9,41 @@ var generateGraph = function(tableArray) {
     dataArray = cleanData(dataArray, indices);
     setViewport();
 
-    var screenHeight = $("#graph").height();
-    var screenWidth =  $("#graph").width();
+    var screenWidth =  $("#graph").width() * 0.95;
+    var marginX = $("#graph").width() * 0.05;
+    var topMarginY = marginX;
+    var bottomMarginY = marginX;
+    var screenHeight = $("#graph").height() - topMarginY - bottomMarginY;
     var scaleY = screenHeight / 100;
     var scaleX = screenWidth / 4;
 
+    var maxRPM = _.max(dataArray, function(element) { return element[indices.RPMIndex];})[indices.RPMIndex];
+    var minRPM = _.min(getNonzeroElements(dataArray, indices.RPMIndex), function(element) { return element[indices.RPMIndex];})[indices.RPMIndex];
+
     var totalRPM = sumOfRPM(dataArray, indices.RPMIndex);
-    var RPM1 = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 1), indices.RPMIndex);
+    var RPM1 = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 0, 2), indices.RPMIndex);
     var RPM2 = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 2), indices.RPMIndex);
-    var RPM3Plus = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 3, 15), indices.RPMIndex);
+    var RPM3 = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 3), indices.RPMIndex);
+    var RPM3Plus = sumOfRPM(filterByDuration(dataArray, indices.durationIndex, 4, 1000), indices.RPMIndex);
 
 
-    var viewPort = makeSVG('rect', {x: '0', y: '0', height: '100%', width: '100%', stroke: 'black', 'stroke-width': 0, fill: '#cccccc'});
-        document.getElementById('graph').appendChild(viewPort);
+    var graph = makeSVG('rect', {x: 0, y: 0, height: '100%', width: '100%', stroke: 'black', 'stroke-width': 0, fill: '#e0e0e0'});
+    var viewPort = makeSVG('rect', {x: 0 + marginX, y: 0 + topMarginY, height: screenHeight, width: screenWidth, stroke: 'black', 'stroke-width': 0, fill: '#f8f8f8'});
+    document.getElementById('graph').appendChild(graph);
+    document.getElementById('graph').appendChild(viewPort);
 
     for(var index in dataArray) {
-        var circle = makeSVG('circle', {cx: getDuration(dataArray[index][indices.durationIndex]) * scaleX, cy: (100 - dataArray[index][indices.CGMIndex]) * scaleY, r: 5, stroke: 'black', 'stroke-width': 0, fill: 'black'});
+        var element = dataArray[index];
+        var circle = makeSVG(
+                                'circle',
+                                {
+                                    cx: getDuration(element[indices.durationIndex]) * scaleX + marginX,
+                                    cy: (100 - element[indices.CGMIndex]) * scaleY + topMarginY,
+                                    r: getRadius(element[indices.RPMIndex], minRPM, maxRPM),
+                                    'stroke-width': 2,
+                                    class: "region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
+                                }
+                            );
         document.getElementById('graph').appendChild(circle);
     }
 }
@@ -90,7 +111,28 @@ var getIndices = function(headerRow) {
         return indices;
 }
 
+var getRadius = function(value, minRPM, maxRPM) {
+    RPMRange = maxRPM - minRPM;
+    if(value === 0) {
+        return 0;
+    } else {
+        var radiusRange = MAX_RADIUS - MIN_RADIUS;
+        return (((value - minRPM) * radiusRange) / RPMRange) + MIN_RADIUS;
+    }
+}
+
+var getNonzeroElements = function(dataArray, index) {
+    return _.filter(dataArray, function(element) { return element[index] != 0;})
+}
 var setViewport = function() {
-        $("#graph").height($(document).height() * 0.9);
-        $("#graph").width($(document).width() * 0.9);
+        $("#graph").attr("height", $(document).height() * 0.92);
+        $("#graph").attr("width", $(document).width() * 0.92);
+}
+
+var getRegion = function(name) {
+    return name.toLowerCase();
+}
+
+var getOffice = function(name) {
+    return name.toLowerCase();
 }
