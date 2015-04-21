@@ -4,15 +4,20 @@ var MAX_RADIUS = 60;
 var generateGraph = function(tableArray) {
     var regionColor = new RegionColor();
     var headerRow =  tableArray[0];
+    var indices = getIndices(headerRow);
     var dataArray = _.without(tableArray, headerRow);
+    dataArray = _.sortBy(dataArray, function(element) {return element[indices.CGMIndex]});
+    dataArray = _.sortBy(dataArray, function(element) {return element[indices.durationIndex]});
     var graphElement = document.getElementById('graph');
 
-    var indices = getIndices(headerRow);
+    var arrange = new Arrange();
     dataArray = cleanData(dataArray, indices);
     setViewport();
 
     var dimension = new Dimension($('#graph').height(), $('#graph').width());
 
+    MIN_RADIUS = dimension.screenWidth / 200;
+    MAX_RADIUS = dimension.screenWidth / 20;
     var maxRevenue = _.max(dataArray, function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
     var minRevenue = _.min(getNonzeroElements(dataArray, indices.revenueIndex), function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
 
@@ -24,12 +29,20 @@ var generateGraph = function(tableArray) {
     for(var index in dataArray) {
         var element = dataArray[index];
         var lane = laneBuilder.getLaneDimensions(element[indices.durationIndex]);
+
+        var elementLocation = new Location(
+            ((lane.end - lane.start) / 2 + lane.start) * dimension.scaleX + dimension.marginX,
+            (100 - element[indices.CGMIndex]) * dimension.scaleY + dimension.topMarginY,
+            getRadius(element[indices.revenueIndex], minRevenue, maxRevenue)
+        );
+
+        elementLocation = arrange.getPosition(elementLocation, lane, dimension, indices);
         var circle = makeSVG(
                                 'circle',
                                 {
-                                    cx:  ((lane.end - lane.start) / 2 + lane.start) * dimension.scaleX + dimension.marginX,
-                                    cy: (100 - element[indices.CGMIndex]) * dimension.scaleY + dimension.topMarginY,
-                                    r: getRadius(element[indices.revenueIndex], minRevenue, maxRevenue),
+                                    cx: elementLocation.x,
+                                    cy: elementLocation.y,
+                                    r: elementLocation.r,
                                     'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
                                     fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
                                     class: "region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
