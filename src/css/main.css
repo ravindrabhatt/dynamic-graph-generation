@@ -9,6 +9,12 @@ line.grid {
     stroke-dasharray: 2 2;
 }
 
+line.lane {
+    stroke-width: 1;
+    stroke: #000000;
+    stroke-dasharray: 5 10;
+}
+
 text.caption {
     fill: #000000;
 }
