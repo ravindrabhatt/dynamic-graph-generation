@@ -32,6 +32,7 @@ var Arrange = function() {
             }
         }
         bubbleList.push(newElement);
+        bubbleList = _.sortBy(bubbleList, function(element) {return element.x;});
         return newElement;
     }
 }

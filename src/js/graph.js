@@ -27,14 +27,25 @@ var generateGraph = function(tableArray) {
     };
 
     new ViewBuilder(dimension).buildView(graphElement);
-    var laneStart  = 0 + dimension.marginX;
-    for(i = 0; i < 3; i++) {
-        var filteredData = filterByDuration(dataArray, indices.durationIndex, i, i + 1);
-        laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue);
-        drawLane(laneStart, (i + 1) + "+", dimension, graphElement);
+    var error = dimension.screenWidth;
+    var threshold = dimension.screenWidth * 0.05;
+    while(error * error > threshold * threshold || error < 0) {
+        var laneStart  = 0 + dimension.marginX;
+        bubbleList = [];
+        for(i = 0; i < 3; i++) {
+            var filteredData = filterByDuration(dataArray, indices.durationIndex, i, i + 1);
+            laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, bubbleList);
+            drawLane(laneStart, (i + 1) + "+", dimension, graphElement);
+        }
+        var filteredData = filterByDuration(dataArray, indices.durationIndex, 3, 100);
+        laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, bubbleList);
+        error = dimension.screenWidth - (laneStart - dimension.marginX);
+        PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);
     }
-    var filteredData = filterByDuration(dataArray, indices.durationIndex, 3, 100);
-    plotLaneMembers(filteredData, indices, dimension, laneStart, revenue);
+
+    for(var index in bubbleList) {
+        document.getElementById('graph').appendChild(bubbleList[index]);
+    }
 }
 
 var getNumber = function(value) {
@@ -43,7 +54,6 @@ var getNumber = function(value) {
     if(isNaN(number)) {
         return 0;
     }
-    console.log(number);
     return number;
 }
 
@@ -99,7 +109,7 @@ var clearGraph = function() {
     $("#graph").empty();
 }
 
-var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue) {
+var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue, bubbleList) {
     var arrange = new Arrange();
     var regionColor = new RegionColor();
     var rightmostElement = new Location(0, 0, 0);
@@ -126,7 +136,7 @@ var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue
                                     class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
                                 }
                             );
-        document.getElementById('graph').appendChild(circle);
+        bubbleList.push(circle);
     }
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;
     return laneEnd;
