@@ -2,6 +2,8 @@ var MIN_RADIUS = 5;
 var MAX_RADIUS = 60;
 
 var generateGraph = function(tableArray) {
+    clearGraph();
+
     var regionColor = new RegionColor();
     var headerRow =  tableArray[0];
     var indices = getIndices(headerRow);
@@ -45,7 +47,7 @@ var generateGraph = function(tableArray) {
                                     r: elementLocation.r,
                                     'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
                                     fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
-                                    class: "region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
+                                    class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
                                 }
                             );
         document.getElementById('graph').appendChild(circle);
@@ -117,4 +119,8 @@ var getRegion = function(name) {
 
 var getOffice = function(name) {
     return name.toLowerCase();
+}
+
+var clearGraph = function() {
+    $("#graph").empty();
 }
