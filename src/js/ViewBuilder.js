@@ -64,3 +64,32 @@ var makeSVG = function(tag, attrs) {
         element.setAttribute(k, attrs[k]);
     return element;
 };
+
+var createBubble = function(elementLocation, element, indices) {
+    var regionColor = new RegionColor();
+    return makeSVG(
+        'circle',
+        {
+            cx: elementLocation.x,
+            cy: elementLocation.y,
+            r: elementLocation.r,
+            'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
+            fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
+            class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
+        }
+    );
+}
+
+var createBubbleCaption = function(elementLocation, element, indices, revenue) {
+    var fontSize = getFontSize(element[indices.revenueIndex], revenue.min, revenue.max);
+    var nameText = makeSVG('text',{x: elementLocation.x, y: elementLocation.y + elementLocation.r + fontSize,
+                            class: "account-name", 'font-size': fontSize, 'text-anchor': 'middle'});
+
+    var nameArray = element[indices.nameIndex].replace(' - ', ' ').split(' ');
+    for(var i in nameArray) {
+        var tspan = makeSVG('tspan',{x: elementLocation.x, dy: (i == 0 ? 0 : fontSize)});
+        tspan.innerHTML = nameArray[i];
+        nameText.appendChild(tspan);
+    }
+    return nameText;
+}

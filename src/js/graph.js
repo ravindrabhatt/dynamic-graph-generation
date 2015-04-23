@@ -126,7 +126,6 @@ var clearGraph = function() {
 
 var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue, elementList) {
     var arrange = new Arrange();
-    var regionColor = new RegionColor();
     var rightmostElement = new Location(0, 0, 0);
     for(var index in dataArray) {
         var element = dataArray[index];
@@ -139,31 +138,12 @@ var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue
 
         elementLocation = arrange.getPosition(elementLocation, dimension, indices);
         if(elementLocation.x > rightmostElement.x) rightmostElement = elementLocation;
-        var name = makeSVG(
-                                        'text',
-                                        {
-                                            x: elementLocation.x,
-                                            y: elementLocation.y + elementLocation.r + PADDING / 2,
-                                            class: "account-name",
-                                            'text-anchor': 'middle',
-                                            'font-size': getFontSize(element[indices.revenueIndex], revenue.min, revenue.max)
-                                        }
-                                    );
-        name.innerHTML = element[indices.nameIndex];
-        var circle = makeSVG(
-                                'circle',
-                                {
-                                    cx: elementLocation.x,
-                                    cy: elementLocation.y,
-                                    r: elementLocation.r,
-                                    data: element[indices.CGMIndex] + '|' + element[indices.durationIndex],
-                                    'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
-                                    fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
-                                    class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
-                                }
-                            );
-        elementList.push(circle);
-        elementList.push(name);
+
+        var nameText = createBubbleCaption(elementLocation, element, indices, revenue);
+        var bubble = createBubble(elementLocation, element, indices);
+
+        elementList.push(bubble);
+        elementList.push(nameText);
     }
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;
     return laneEnd;
@@ -184,7 +164,7 @@ var drawLane = function(laneStart, caption, dimension, elementList) {
     var text = makeSVG('text',
                   {
                       x: laneStart + dimension.marginX / 10,
-                      y: dimension.topMarginY + dimension.screenHeight + dimension.bottomMarginY / 2,
+                      y: dimension.topMarginY + dimension.screenHeight + dimension.bottomMarginY * 0.8,
                       class: "caption"
                   }
               );
