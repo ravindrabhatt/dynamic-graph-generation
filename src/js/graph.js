@@ -50,6 +50,15 @@ var generateGraph = function(tableArray) {
     for(var index in elementList) {
         document.getElementById('graph').appendChild(elementList[index]);
     }
+
+    $(".bubble").hover(
+        function() {
+            showPopUp(this, dataArray);
+        },
+        function() {
+            hidePopUp();
+        }
+    )
 }
 
 var getNumber = function(value) {

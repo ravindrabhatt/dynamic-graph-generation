@@ -75,7 +75,8 @@ var createBubble = function(elementLocation, element, indices) {
             r: elementLocation.r,
             'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
             fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
-            class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
+            class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex]),
+            project: element[indices.nameIndex]
         }
     );
 }

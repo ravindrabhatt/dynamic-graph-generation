@@ -18,3 +18,24 @@ line.lane {
 text.caption {
     fill: #000000;
 }
+
+#popup {
+    display: none;
+    background: #ffffff;
+    position: absolute;
+    padding: 10px;
+    border-radius: 0px 5px 5px 5px;
+    box-shadow: 6px 6px 10px #444444;
+    border: 1px solid black;
+}
+
+.header {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+}
+
+.data {
+    font-size: 16px;
+    padding: 10px;
+}

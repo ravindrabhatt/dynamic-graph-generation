@@ -48,3 +48,21 @@ var filterByDuration = function(dataArray, index, lower, upper) {
         return parseInt(element[index]) >= lower && parseInt(element[index]) < upper;
     });
 }
+
+
+var showPopUp = function(element, dataArray) {
+    $("#popup").show();
+    var offset = $("#graph").position();
+    var x = parseFloat(element.getAttribute('cx'));
+    var y = parseFloat(element.getAttribute('cy'));
+    var r = parseFloat(element.getAttribute('r'));
+    $("#popup").css('left', x + r / Math.sqrt(2) + offset.left);
+    $("#popup").css('top', y + r / Math.sqrt(2) + offset.top);
+
+    var projectName = element.getAttribute('project');
+    document.getElementById('project-name').innerHTML = projectName;
+}
+
+var hidePopUp = function() {
+    $("#popup").hide();
+}
