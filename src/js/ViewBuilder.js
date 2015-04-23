@@ -11,7 +11,7 @@ var ViewBuilder = function(dimension) {
         var axisX = makeSVG('line', {x1: marginX, y1: topMarginY + screenHeight, x2: marginX + screenWidth, y2: topMarginY + screenHeight, class: "axis"});
         var axisY = makeSVG('line', {x1: marginX, y1: topMarginY, x2: marginX, y2: topMarginY + screenHeight, class: "axis"});
     
-        var captionY = makeSVG('text', {x: marginX / 2, y: topMarginY + screenHeight / 2, transform: 'rotate(270, ' + marginX / 2 + ', ' + (topMarginY + screenHeight / 2) + ')', class: "caption"});
+        var captionY = makeSVG('text', {x: marginX / 2, 'text-anchor': 'middle', y: topMarginY + screenHeight / 2, transform: 'rotate(270, ' + marginX / 2 + ', ' + (topMarginY + screenHeight / 2) + ')', class: "caption"});
         captionY.innerHTML = "CGM";
     
         element.appendChild(area);

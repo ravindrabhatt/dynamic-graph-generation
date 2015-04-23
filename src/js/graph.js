@@ -1,5 +1,11 @@
-var MIN_RADIUS = 5;
-var MAX_RADIUS = 60;
+var MIN_RADIUS;
+var MAX_RADIUS;
+
+var MIN_FONT = 8;
+var MAX_FONT = 15;
+
+var GRAPH_HEIGHT_PERCENT = 0.90
+var GRAPH_WIDTH_PERCENT = .98
 
 var generateGraph = function(tableArray) {
     clearGraph();
@@ -16,8 +22,6 @@ var generateGraph = function(tableArray) {
 
     var dimension = new Dimension($('#graph').height(), $('#graph').width());
 
-    MIN_RADIUS = dimension.screenWidth / 200;
-    MAX_RADIUS = dimension.screenWidth / 20;
     var maxRevenue = _.max(dataArray, function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
     var minRevenue = _.min(getNonzeroElements(dataArray, indices.revenueIndex), function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
 
@@ -31,20 +35,20 @@ var generateGraph = function(tableArray) {
     var threshold = dimension.screenWidth * 0.05;
     while(error * error > threshold * threshold || error < 0) {
         var laneStart  = 0 + dimension.marginX;
-        bubbleList = [];
+        elementList = [];
         for(i = 0; i < 3; i++) {
             var filteredData = filterByDuration(dataArray, indices.durationIndex, i, i + 1);
-            laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, bubbleList);
-            drawLane(laneStart, (i + 1) + "+", dimension, graphElement);
+            laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, elementList);
+            drawLane(laneStart, (i + 1) + "+", dimension, elementList);
         }
         var filteredData = filterByDuration(dataArray, indices.durationIndex, 3, 100);
-        laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, bubbleList);
+        laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, elementList);
         error = dimension.screenWidth - (laneStart - dimension.marginX);
         PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);
     }
 
-    for(var index in bubbleList) {
-        document.getElementById('graph').appendChild(bubbleList[index]);
+    for(var index in elementList) {
+        document.getElementById('graph').appendChild(elementList[index]);
     }
 }
 
@@ -76,6 +80,7 @@ var getIndices = function(headerRow) {
         indices.officeIndex = _.indexOf(headerRow, "Office");
         indices.durationIndex = _.indexOf(headerRow, "Age");
         indices.revenueIndex = _.indexOf(headerRow, "Revenue");
+        indices.nameIndex = _.indexOf(headerRow, "Project");
         return indices;
 }
 
@@ -89,12 +94,22 @@ var getRadius = function(value, minRevenue, maxRevenue) {
     }
 }
 
+var getFontSize = function(value, minRevenue, maxRevenue) {
+    RevenueRange = maxRevenue - minRevenue;
+    if(value === 0) {
+        return 0;
+    } else {
+        var radiusRange = MAX_FONT - MIN_FONT;
+        return (((value - minRevenue) * radiusRange) / RevenueRange) + MIN_FONT;
+    }
+}
+
 var getNonzeroElements = function(dataArray, index) {
     return _.filter(dataArray, function(element) { return element[index] != 0;})
 }
 var setViewport = function() {
-        $("#graph").attr("height", $(document).height() * 0.92);
-        $("#graph").attr("width", $(document).width() * 0.92);
+        $("#graph").attr("height", $(document).height() * GRAPH_HEIGHT_PERCENT);
+        $("#graph").attr("width", $(document).width() * GRAPH_WIDTH_PERCENT);
 }
 
 var getRegion = function(name) {
@@ -109,7 +124,7 @@ var clearGraph = function() {
     $("#graph").empty();
 }
 
-var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue, bubbleList) {
+var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue, elementList) {
     var arrange = new Arrange();
     var regionColor = new RegionColor();
     var rightmostElement = new Location(0, 0, 0);
@@ -124,6 +139,17 @@ var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue
 
         elementLocation = arrange.getPosition(elementLocation, dimension, indices);
         if(elementLocation.x > rightmostElement.x) rightmostElement = elementLocation;
+        var name = makeSVG(
+                                        'text',
+                                        {
+                                            x: elementLocation.x,
+                                            y: elementLocation.y + elementLocation.r + PADDING / 2,
+                                            class: "account-name",
+                                            'text-anchor': 'middle',
+                                            'font-size': getFontSize(element[indices.revenueIndex], revenue.min, revenue.max)
+                                        }
+                                    );
+        name.innerHTML = element[indices.nameIndex];
         var circle = makeSVG(
                                 'circle',
                                 {
@@ -136,14 +162,15 @@ var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue
                                     class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex])
                                 }
                             );
-        bubbleList.push(circle);
+        elementList.push(circle);
+        elementList.push(name);
     }
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;
     return laneEnd;
 }
 
 
-var drawLane = function(laneStart, caption, dimension, element) {
+var drawLane = function(laneStart, caption, dimension, elementList) {
     var line = makeSVG('line',
         {
             x1: laneStart,
@@ -153,7 +180,7 @@ var drawLane = function(laneStart, caption, dimension, element) {
             class: "lane"
         }
     );
-    element.appendChild(line);
+    elementList.push(line);
     var text = makeSVG('text',
                   {
                       x: laneStart + dimension.marginX / 10,
@@ -162,5 +189,5 @@ var drawLane = function(laneStart, caption, dimension, element) {
                   }
               );
     text.innerHTML = caption;
-    element.appendChild(text);
+    elementList.push(text);
 }

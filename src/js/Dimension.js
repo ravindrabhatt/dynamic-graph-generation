@@ -6,4 +6,6 @@ var Dimension = function(graphHeight, graphWidth) {
     this.screenHeight = graphHeight - this.topMarginY - this.bottomMarginY;
     this.scaleY = this.screenHeight / 100;
     this.scaleX = this.screenWidth / 100;
+    MIN_RADIUS = this.screenWidth / 200;
+    MAX_RADIUS = this.screenWidth / 20;
 }
