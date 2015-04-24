@@ -20,7 +20,7 @@ var Arrange = function() {
         new Location(0, 0, 0)
     ];
     var increment = 1;
-    this.getPosition = function(newElement, dimension, indices) {
+    this.getPosition = function(newElement, dimension) {
         var wrapFlag = false;
         newElement.x = newElement.x + newElement.r + PADDING;
         for(var i = 0; i < bubbleList.length; i++) {
@@ -42,15 +42,15 @@ var getScaledValueX = function(value, dimension) {
 }
 
 
-var filterByDuration = function(dataArray, index, lower, upper) {
+var filterByDuration = function(dataMap, lower, upper) {
     if(!upper) upper = lower + 1;
-    return _.filter(dataArray, function(element){
-        return parseInt(element[index]) >= lower && parseInt(element[index]) < upper;
+    return _.filter(dataMap, function(element){
+        return parseInt(element.duration) >= lower && parseInt(element.duration) < upper;
     });
 }
 
 
-var showPopUp = function(element, dataArray) {
+var showPopUp = function(element, dataMap) {
     $("#popup").show();
     var offset = $("#graph").position();
     var x = parseFloat(element.getAttribute('cx'));
@@ -60,7 +60,8 @@ var showPopUp = function(element, dataArray) {
     $("#popup").css('top', y + r / Math.sqrt(2) + offset.top);
 
     var projectName = element.getAttribute('project');
-    document.getElementById('project-name').innerHTML = projectName;
+    var project = dataMap[projectName];
+    document.getElementById('project-name').innerHTML = project.name;
 }
 
 var hidePopUp = function() {

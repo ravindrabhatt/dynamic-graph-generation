@@ -7,23 +7,18 @@ var MAX_FONT = 15;
 var GRAPH_HEIGHT_PERCENT = 0.90
 var GRAPH_WIDTH_PERCENT = .98
 
-var generateGraph = function(tableArray) {
+var generateGraph = function(tableMap) {
     clearGraph();
-
-    var headerRow =  tableArray[0];
-    var indices = getIndices(headerRow);
-    var dataArray = _.without(tableArray, headerRow);
-    dataArray = _.sortBy(dataArray, function(element) {return element[indices.durationIndex]});
 
     var graphElement = document.getElementById('graph');
 
-    dataArray = cleanData(dataArray, indices);
+    dataMap = cleanData(tableMap);
     setViewport();
 
     var dimension = new Dimension($('#graph').height(), $('#graph').width());
 
-    var maxRevenue = _.max(dataArray, function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
-    var minRevenue = _.min(getNonzeroElements(dataArray, indices.revenueIndex), function(element) { return element[indices.revenueIndex];})[indices.revenueIndex];
+    var maxRevenue = _.max(dataMap, function(element) { return element.revenue;}).revenue;
+    var minRevenue = _.min(getNonzeroElements(dataMap), function(element) { return element.revenue;}).revenue;
 
     var revenue = {
         min : minRevenue,
@@ -31,18 +26,19 @@ var generateGraph = function(tableArray) {
     };
 
     new ViewBuilder(dimension).buildView(graphElement);
+
     var error = dimension.screenWidth;
     var threshold = dimension.screenWidth * 0.05;
     while(error * error > threshold * threshold || error < 0) {
         var laneStart  = 0 + dimension.marginX;
         elementList = [];
         for(i = 0; i < 3; i++) {
-            var filteredData = filterByDuration(dataArray, indices.durationIndex, i, i + 1);
-            laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, elementList);
+            var filteredData = filterByDuration(dataMap, i, i + 1);
+            laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList);
             drawLane(laneStart, (i + 1) + "+", dimension, elementList);
         }
-        var filteredData = filterByDuration(dataArray, indices.durationIndex, 3, 100);
-        laneStart = plotLaneMembers(filteredData, indices, dimension, laneStart, revenue, elementList);
+        var filteredData = filterByDuration(dataMap, 3, 100);
+        laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList);
         error = dimension.screenWidth - (laneStart - dimension.marginX);
         PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);
     }
@@ -53,7 +49,7 @@ var generateGraph = function(tableArray) {
 
     $(".bubble").hover(
         function() {
-            showPopUp(this, dataArray);
+            showPopUp(this, dataMap);
         },
         function() {
             hidePopUp();
@@ -71,26 +67,15 @@ var getNumber = function(value) {
 }
 
 
-var cleanData = function(dataArray, indices) {
-   return _.map(dataArray,
-    function(element) {
-        element[indices.revenueIndex] = getNumber(element[indices.revenueIndex]);
-        element[indices.CGMIndex] = getNumber(element[indices.CGMIndex]);
-        element[indices.durationIndex] = getNumber(element[indices.durationIndex]);
+var cleanData = function(dataMap) {
+   return _.mapObject(dataMap,
+    function(element, key) {
+        element.revenue = getNumber(element.revenue);
+        element.CGM = getNumber(element.CGM);
+        element.duration = getNumber(element.duration);
         return element;
     }
    );
-}
-
-var getIndices = function(headerRow) {
-        var indices = {};
-        indices.CGMIndex = _.indexOf(headerRow, "CGM");
-        indices.regionIndex = _.indexOf(headerRow, "Region");
-        indices.officeIndex = _.indexOf(headerRow, "Office");
-        indices.durationIndex = _.indexOf(headerRow, "Age");
-        indices.revenueIndex = _.indexOf(headerRow, "Revenue");
-        indices.nameIndex = _.indexOf(headerRow, "Project");
-        return indices;
 }
 
 var getRadius = function(value, minRevenue, maxRevenue) {
@@ -113,8 +98,8 @@ var getFontSize = function(value, minRevenue, maxRevenue) {
     }
 }
 
-var getNonzeroElements = function(dataArray, index) {
-    return _.filter(dataArray, function(element) { return element[index] != 0;})
+var getNonzeroElements = function(dataMap) {
+    return _.filter(dataMap, function(element) { return element.revenue != 0;})
 }
 var setViewport = function() {
         $("#graph").attr("height", $(document).height() * GRAPH_HEIGHT_PERCENT);
@@ -133,27 +118,28 @@ var clearGraph = function() {
     $("#graph").empty();
 }
 
-var plotLaneMembers = function(dataArray, indices, dimension, laneStart, revenue, elementList) {
+var plotLaneMembers = function(dataMap, dimension, laneStart, revenue, elementList) {
     var arrange = new Arrange();
     var rightmostElement = new Location(0, 0, 0);
-    for(var index in dataArray) {
-        var element = dataArray[index];
+    _.each(dataMap,
+        function(element){
 
-        var elementLocation = new Location(
-            laneStart,
-            (100 - element[indices.CGMIndex]) * dimension.scaleY + dimension.topMarginY,
-            getRadius(element[indices.revenueIndex], revenue.min, revenue.max)
-        );
+            var elementLocation = new Location(
+                laneStart,
+                (100 - element.CGM) * dimension.scaleY + dimension.topMarginY,
+                getRadius(element.revenue, revenue.min, revenue.max)
+            );
 
-        elementLocation = arrange.getPosition(elementLocation, dimension, indices);
-        if(elementLocation.x > rightmostElement.x) rightmostElement = elementLocation;
+            elementLocation = arrange.getPosition(elementLocation, dimension);
+            if(elementLocation.x > rightmostElement.x) rightmostElement = elementLocation;
 
-        var nameText = createBubbleCaption(elementLocation, element, indices, revenue);
-        var bubble = createBubble(elementLocation, element, indices);
+            var nameText = createBubbleCaption(elementLocation, element, revenue);
+            var bubble = createBubble(elementLocation, element);
 
-        elementList.push(bubble);
-        elementList.push(nameText);
-    }
+            elementList.push(bubble);
+            elementList.push(nameText);
+        }
+    )
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;
     return laneEnd;
 }

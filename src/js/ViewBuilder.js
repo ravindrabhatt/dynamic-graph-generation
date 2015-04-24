@@ -65,7 +65,7 @@ var makeSVG = function(tag, attrs) {
     return element;
 };
 
-var createBubble = function(elementLocation, element, indices) {
+var createBubble = function(elementLocation, element) {
     var regionColor = new RegionColor();
     return makeSVG(
         'circle',
@@ -73,20 +73,20 @@ var createBubble = function(elementLocation, element, indices) {
             cx: elementLocation.x,
             cy: elementLocation.y,
             r: elementLocation.r,
-            'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element[indices.regionIndex])),
-            fill: regionColor.getOfficeColor(getOffice(element[indices.officeIndex])),
-            class: "bubble region-" + getRegion(element[indices.regionIndex]) + " office-" + getOffice(element[indices.officeIndex]),
-            project: element[indices.nameIndex]
+            'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element.region)),
+            fill: regionColor.getOfficeColor(getOffice(element.office)),
+            class: "bubble region-" + getRegion(element.office) + " office-" + getOffice(element.office),
+            project: element.name
         }
     );
 }
 
-var createBubbleCaption = function(elementLocation, element, indices, revenue) {
-    var fontSize = getFontSize(element[indices.revenueIndex], revenue.min, revenue.max);
+var createBubbleCaption = function(elementLocation, element, revenue) {
+    var fontSize = getFontSize(element.revenue, revenue.min, revenue.max);
     var nameText = makeSVG('text',{x: elementLocation.x, y: elementLocation.y + elementLocation.r + fontSize,
                             class: "account-name", 'font-size': fontSize, 'text-anchor': 'middle'});
 
-    var nameArray = element[indices.nameIndex].replace(' - ', ' ').split(' ');
+    var nameArray = element.name.replace(' - ', ' ').split(' ');
     for(var i in nameArray) {
         var tspan = makeSVG('tspan',{x: elementLocation.x, dy: (i == 0 ? 0 : fontSize)});
         tspan.innerHTML = nameArray[i];
