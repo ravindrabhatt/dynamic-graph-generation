@@ -24,10 +24,26 @@ text.caption {
     background: #ffffff;
     position: absolute;
     padding: 10px;
-    border-radius: 0px 5px 5px 5px;
-    box-shadow: 6px 6px 10px #444444;
     border: 1px solid black;
 }
+
+.pointer-top-left {
+    border-radius: 0px 5px 5px 5px;
+    box-shadow: 6px 6px 10px #444444;
+}
+.pointer-top-right {
+    border-radius: 5px 0px 5px 5px;
+    box-shadow: -6px 6px 10px #444444;
+}
+.pointer-bottom-right {
+    border-radius: 5px 5px 0px 5px;
+    box-shadow: -6px -6px 10px #444444;
+}
+.pointer-bottom-left {
+    border-radius: 5px 5px 5px 0px;
+    box-shadow: 6px -6px 10px #444444;
+}
+
 
 .header {
     font-weight: bold;

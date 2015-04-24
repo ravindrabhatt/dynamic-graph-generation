@@ -50,20 +50,43 @@ var filterByDuration = function(dataMap, lower, upper) {
 }
 
 
-var showPopUp = function(element, dataMap) {
+var showPopUp = function(element, dataMap, dimension) {
     $("#popup").show();
-    var offset = $("#graph").position();
-    var x = parseFloat(element.getAttribute('cx'));
-    var y = parseFloat(element.getAttribute('cy'));
-    var r = parseFloat(element.getAttribute('r'));
-    $("#popup").css('left', x + r / Math.sqrt(2) + offset.left);
-    $("#popup").css('top', y + r / Math.sqrt(2) + offset.top);
-
     var projectName = element.getAttribute('project');
     var project = dataMap[projectName];
     document.getElementById('project-name').innerHTML = project.name;
+    var projectDataElement = document.getElementById('project-data');
+    projectDataElement.innerHTML = "";
+    projectDataElement.innerHTML += "Region : " + project.region + "<br>";
+    projectDataElement.innerHTML += "Office : " + project.office + "<br>";
+    projectDataElement.innerHTML += "Revenue : $ " + project.revenue + "<br>";
+    projectDataElement.innerHTML += "CGM : " + project.CGM + "%" + "<br>";
+    projectDataElement.innerHTML += "Age : " + project.duration + (project.duration == 1 ? " Year" : " Years") + "<br>";
+    setupPopupLocation(element, dimension);
 }
 
 var hidePopUp = function() {
     $("#popup").hide();
+}
+
+var setupPopupLocation = function(element, dimension) {
+        var x = parseFloat(element.getAttribute('cx'));
+        var y = parseFloat(element.getAttribute('cy'));
+        var r = parseFloat(element.getAttribute('r'));
+
+        var offset = $("#graph").position();
+        var xLocation = "left";
+        var yLocation = "top";
+        if(x > dimension.screenWidth / 2) { xLocation = "right";}
+        if(y > dimension.screenHeight / 2) { yLocation = "bottom";}
+        $("#popup").css("left", x
+                                 + (r / Math.sqrt(2) + offset.left) * (xLocation == "left" ? 1 : -1)
+                                 - (xLocation == "left" ? 0 : $("#popup").width())
+                      );
+        $("#popup").css('top', y
+                                + (r / Math.sqrt(2) + offset.top) * (yLocation == "top" ? 1 : -1)
+                                - (yLocation == "top" ? 0 : $("#popup").height())
+                      );
+        $("#popup").attr("class", "pointer-" + yLocation + "-" + xLocation);
+
 }

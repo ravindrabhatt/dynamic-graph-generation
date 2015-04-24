@@ -49,7 +49,7 @@ var generateGraph = function(tableMap) {
 
     $(".bubble").hover(
         function() {
-            showPopUp(this, dataMap);
+            showPopUp(this, dataMap, dimension);
         },
         function() {
             hidePopUp();
