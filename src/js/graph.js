@@ -43,6 +43,8 @@ var generateGraph = function(tableMap) {
         PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);
     }
 
+    drawBubbleScale(elementList, revenue, dimension);
+
     for(var index in elementList) {
         document.getElementById('graph').appendChild(elementList[index]);
     }

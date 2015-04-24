@@ -73,7 +73,7 @@ var createBubble = function(elementLocation, element) {
             cx: elementLocation.x,
             cy: elementLocation.y,
             r: elementLocation.r,
-            'stroke-width': 2, stroke: regionColor.getRegionColor(getRegion(element.region)),
+            'stroke-width': 3, stroke: regionColor.getRegionColor(getRegion(element.region)),
             fill: regionColor.getOfficeColor(getOffice(element.office)),
             class: "bubble region-" + getRegion(element.office) + " office-" + getOffice(element.office),
             project: element.name
@@ -93,4 +93,82 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
         nameText.appendChild(tspan);
     }
     return nameText;
+}
+
+var drawBubbleScale = function(elementList, revenue, dimension) {
+    var revenueRange = revenue.max - revenue.min;
+    var roundedMax = Math.pow(10, revenue.max.toString().length);
+    if(roundedMax - revenue.max > revenue.max - roundedMax / 2) roundedMax = roundedMax / 2;
+    for(var scale = 20; scale < 100; scale += 20) {
+        var radius = getRadius(roundedMax * scale / 100, revenue.min, revenue.max);
+        console.log(roundedMax * scale / 100);
+        elementList.push(
+            makeSVG(
+                'circle',
+                {
+                    cx: dimension.screenWidth * 0.9 + dimension.marginX,
+                    cy: dimension.topMarginY + dimension.screenHeight - radius,
+                    r: radius,
+                    'stroke-width': 1,
+                    fill: "none",
+                    stroke: "#888888",
+                    class: "scale"
+                }
+            )
+        );
+
+        var caption = makeSVG(
+                'text',
+                {
+                    x: dimension.screenWidth * 0.95 + dimension.marginX,
+                    y: dimension.topMarginY + dimension.screenHeight - radius * 2,
+                    'font-size': 12,
+                    stroke: "#AAAAAA"
+                }
+            )
+        var value = roundedMax * scale / 100;
+        caption.innerHTML = getCurrencyAmount(value);
+        elementList.push(caption);
+
+        elementList.push(
+            makeSVG(
+                'line',
+                {
+                    x1: dimension.screenWidth * 0.9 + dimension.marginX,
+                    y1: dimension.topMarginY + dimension.screenHeight - radius * 2,
+                    x2: dimension.screenWidth * 0.95 + dimension.marginX,
+                    y2: dimension.topMarginY + dimension.screenHeight - radius * 2,
+                    stroke: "#AAAAAA",
+                    class: "scale"
+                }
+            )
+        );
+    }
+
+    elementList.push(
+                makeSVG(
+                    'line',
+                    {
+                        x1: dimension.screenWidth * 0.9 + dimension.marginX,
+                        y1: dimension.topMarginY + dimension.screenHeight,
+                        x2: dimension.screenWidth * 0.9 + dimension.marginX,
+                        y2: dimension.topMarginY + dimension.screenHeight - 2.2 * radius,
+                        stroke: "#888888",
+                        class: "scale"
+                    }
+                )
+            );
+}
+
+var getCurrencyAmount = function(value) {
+    var valueString = "";
+    if(value / 1000000 >= 1) {
+        valueString = value / 1000000 + " M"
+    } else if(value / 1000 >= 1) {
+        valueString = value / 1000 + " K"
+    } else {
+        valueString = value.toString();
+    }
+    return valueString;
+
 }
