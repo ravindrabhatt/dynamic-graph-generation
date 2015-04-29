@@ -4,8 +4,7 @@ var RegionColor = function(){
         americas: '#ffb782',
         eu: '#fde0cf',
         india: '#ff8888',
-        apac: '#fffa81',
-        default: '#000000'
+        apac: '#fffa81'
     };
 
     this.officeColor = {
@@ -13,8 +12,7 @@ var RegionColor = function(){
         bangalore: '#152dfb',
         hyderabad: '#bf9c84',
         gurgaon: '#f59a9f',
-        chennai: '#66b983',
-        default: '#ff0000'
+        chennai: '#66b983'
     };
 
     this.getRegionColor = function(region) {

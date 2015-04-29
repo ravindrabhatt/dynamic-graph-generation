@@ -44,6 +44,7 @@ var generateGraph = function(tableMap) {
     }
 
     drawBubbleScale(elementList, revenue, dimension);
+    drawLegend(elementList, dimension);
 
     for(var index in elementList) {
         document.getElementById('graph').appendChild(elementList[index]);

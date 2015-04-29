@@ -95,6 +95,79 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
     return nameText;
 }
 
+var drawLegend = function(elementList, dimension) {
+    var region = new RegionColor();
+    var xLocation = dimension.marginX + dimension.screenWidth * 0.06;
+    var yLocation = dimension.topMarginY * 0.3;
+    var width = dimension.screenWidth * 0.06;
+    var height = dimension.topMarginY * 0.4;
+    var offset = dimension.screenWidth * 0.07;
+
+    _.each(region.regionColor, function(color, region) {
+        elementList.push(
+            makeSVG(
+                'rect',
+                {
+                    x: xLocation,
+                    y: yLocation,
+                    width: width,
+                    height: height,
+                    fill: color
+                }
+            )
+        );
+
+        var textElement = makeSVG(
+            'text',
+            {
+                x: xLocation + width / 2,
+                y: yLocation + height / 2,
+                'text-anchor': 'middle',
+                'font-size': 12,
+                'dominant-baseline': 'central',
+                fill: "#FFFFFF"
+            }
+        );
+
+        textElement.innerHTML = region.toUpperCase();
+        elementList.push(textElement);
+
+        xLocation += offset;
+    });
+
+    _.each(region.officeColor, function(color, office){
+        elementList.push(
+            makeSVG(
+                'rect',
+                {
+                    x: xLocation,
+                    y: yLocation,
+                    width: width,
+                    height: height,
+                    stroke: "#888888",
+                    'stroke-width': 1,
+                    fill: "none"
+                }
+            )
+        );        var textElement = makeSVG(
+            'text',
+            {
+                x: xLocation + width / 2,
+                y: yLocation + height / 2,
+                'text-anchor': 'middle',
+                'font-size': 10,
+                'dominant-baseline': 'central',
+                fill: color
+            }
+        );
+
+        textElement.innerHTML = office.toUpperCase();
+        elementList.push(textElement);
+
+        xLocation += offset;
+    })
+}
+
 var drawBubbleScale = function(elementList, revenue, dimension) {
     var revenueRange = revenue.max - revenue.min;
     var roundedMax = Math.pow(10, revenue.max.toString().length);

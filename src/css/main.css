@@ -24,24 +24,24 @@ text.caption {
     background: #ffffff;
     position: absolute;
     padding: 10px;
-    border: 1px solid black;
+    border: 1px solid #888888;
 }
 
 .pointer-top-left {
-    border-radius: 0px 5px 5px 5px;
-    box-shadow: 6px 6px 10px #444444;
+    border-radius: 0px 10px 10px 10px;
+    box-shadow: 6px 6px 10px #888888;
 }
 .pointer-top-right {
-    border-radius: 5px 0px 5px 5px;
-    box-shadow: -6px 6px 10px #444444;
+    border-radius: 10px 0px 10px 10px;
+    box-shadow: -6px 6px 10px #888888;
 }
 .pointer-bottom-right {
-    border-radius: 5px 5px 0px 5px;
-    box-shadow: -6px -6px 10px #444444;
+    border-radius: 10px 10px 0px 10px;
+    box-shadow: -6px -6px 10px #888888;
 }
 .pointer-bottom-left {
-    border-radius: 5px 5px 5px 0px;
-    box-shadow: 6px -6px 10px #444444;
+    border-radius: 10px 10px 10px 0px;
+    box-shadow: 6px -6px 10px #888888;
 }
 
 
