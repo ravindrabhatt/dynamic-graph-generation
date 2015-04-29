@@ -178,6 +178,9 @@ var drawLane = function(laneStart, caption, dimension, elementList) {
             y1: dimension.topMarginY,
             x2: laneStart,
             y2: dimension.topMarginY + dimension.screenHeight + dimension.bottomMarginY * 3 / 4,
+            'stroke-width': 1,
+            stroke: '#000000',
+            'stroke-dasharray': '5 10',
             class: "lane"
         }
     );
@@ -186,6 +189,7 @@ var drawLane = function(laneStart, caption, dimension, elementList) {
                   {
                       x: laneStart + dimension.marginX / 10,
                       y: dimension.topMarginY + dimension.screenHeight + dimension.bottomMarginY * 0.8,
+                      fill: '#000000',
                       class: "caption"
                   }
               );
