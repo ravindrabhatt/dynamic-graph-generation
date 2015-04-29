@@ -7,6 +7,7 @@ var readFile = function() {
     reader.onload = function(event) {
         var dataMap = parseData(event.target.result);
         generateGraph(dataMap);
+        createSVGForSaving();
     };
 }
 

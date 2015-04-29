@@ -6,6 +6,10 @@
     border: 1px solid #888888;
 }
 
+#option {
+    padding: 10px;
+}
+
 .pointer-top-left {
     border-radius: 0px 10px 10px 10px;
     box-shadow: 6px 6px 10px #888888;

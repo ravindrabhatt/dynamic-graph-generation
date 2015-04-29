@@ -90,3 +90,21 @@ var setupPopupLocation = function(element, dimension) {
         $("#popup").attr("class", "pointer-" + yLocation + "-" + xLocation);
 
 }
+
+var createSVGForSaving = function() {
+    var filename = 'portfolio'
+    var svg  = document.getElementById('graph');
+    var xml  = new XMLSerializer().serializeToString(svg);
+    var data = "data:image/svg+xml;base64," + btoa(xml);
+
+    var anchor = document.createElement('a');
+    anchor.setAttribute('href', data);
+    anchor.setAttribute('download', filename + ".svg");
+
+    var button = document.createElement('button');
+    button.innerHTML = "Download";
+
+    anchor.appendChild(button)
+    document.getElementById('option').appendChild(anchor);
+
+}
