@@ -4,6 +4,9 @@ var MAX_RADIUS;
 var MIN_FONT = 8;
 var MAX_FONT = 15;
 
+var MIN_ARROW = 2;
+var MAX_ARROW = 8;
+
 var GRAPH_HEIGHT_PERCENT = 0.90
 var GRAPH_WIDTH_PERCENT = .98
 
@@ -76,6 +79,7 @@ var cleanData = function(dataMap) {
         element.revenue = getNumber(element.revenue);
         element.CGM = getNumber(element.CGM);
         element.duration = getNumber(element.duration);
+        element.trend = getNumber(element.trend);
         return element;
     }
    );
@@ -99,6 +103,23 @@ var getFontSize = function(value, minRevenue, maxRevenue) {
         var radiusRange = MAX_FONT - MIN_FONT;
         return (((value - minRevenue) * radiusRange) / RevenueRange) + MIN_FONT;
     }
+}
+
+var getArrowScale = function(value, minRevenue, maxRevenue) {
+    RevenueRange = maxRevenue - minRevenue;
+    if(value === 0) {
+        return 0;
+    } else {
+        var radiusRange = MAX_ARROW - MIN_ARROW;
+        return (((value - minRevenue) * radiusRange) / RevenueRange) + MIN_ARROW;
+    }
+}
+
+var getTrendDirection = function(value) {
+    if(value >= 0) {
+        return 1;
+    }
+    return -1;
 }
 
 var getNonzeroElements = function(dataMap) {
@@ -138,9 +159,11 @@ var plotLaneMembers = function(dataMap, dimension, laneStart, revenue, elementLi
 
             var nameText = createBubbleCaption(elementLocation, element, revenue);
             var bubble = createBubble(elementLocation, element);
+            var trendArrow = drawArrow(getTrendDirection(element.trend), elementLocation, getArrowScale(element.revenue, revenue.min, revenue.max));
 
             elementList.push(bubble);
             elementList.push(nameText);
+            elementList.push(trendArrow);
         }
     )
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;

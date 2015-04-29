@@ -245,3 +245,20 @@ var getCurrencyAmount = function(value) {
     return valueString;
 
 }
+
+var drawArrow = function(direction, centre, scale) {
+
+    centre.y = centre.y - direction * (centre.r - scale * 3) / 2;
+    var points = centre.x + "," + (centre.y - direction * scale * 0.4) + " "
+        + (centre.x - scale) + "," + centre.y + " "
+        + centre.x + "," + (centre.y - direction * scale * 3) + " "
+        + (centre.x + scale) + "," + centre.y + " "
+        + centre.x + "," + (centre.y - direction * scale * 0.4) + " "
+
+    return makeSVG('polygon', {
+            points: points,
+            fill: direction == 1 ? '#00FF00' : '#FF0000',
+            stroke: direction == 1 ? '#008800' : '#880000'
+        }
+    );
+}

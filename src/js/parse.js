@@ -32,6 +32,7 @@ var createMap = function(dataArray) {
         map.revenue = element[indices.revenueIndex];
         map.CGM = element[indices.CGMIndex];
         map.duration = element[indices.durationIndex];
+        map.trend = element[indices.trendIndex];
         dataMap[name] = map;
     }
     return dataMap;
@@ -46,5 +47,6 @@ var getIndices = function(headerRow) {
         indices.durationIndex = _.indexOf(headerRow, "Age");
         indices.revenueIndex = _.indexOf(headerRow, "Revenue");
         indices.nameIndex = _.indexOf(headerRow, "Project");
+        indices.trendIndex = _.indexOf(headerRow, "Trend");
         return indices;
 }
