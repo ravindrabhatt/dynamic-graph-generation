@@ -97,7 +97,11 @@ var createSVGForSaving = function() {
     var xml  = new XMLSerializer().serializeToString(svg);
     var data = "data:image/svg+xml;base64," + btoa(xml);
 
+    var oldLink = document.getElementById('download-link');
+    if(oldLink) oldLink.remove();
+
     var anchor = document.createElement('a');
+    anchor.setAttribute('id', "download-link");
     anchor.setAttribute('href', data);
     anchor.setAttribute('download', filename + ".svg");
 
