@@ -1,4 +1,12 @@
-var PADDING = 10;
+var PADDING;
+var MIN_RADIUS;
+var MAX_RADIUS;
+var MIN_FONT;
+var MAX_FONT;
+var MIN_ARROW;
+var MAX_ARROW;
+var GRAPH_HEIGHT_PERCENT;
+var GRAPH_WIDTH_PERCENT;
 
 var Location = function(x1, y1, r1) {
     var scope = this;
@@ -96,9 +104,6 @@ var createSVGForSaving = function() {
     var svg  = document.getElementById('graph');
     var xml  = new XMLSerializer().serializeToString(svg);
     var data = "data:image/svg+xml;base64," + btoa(xml);
-
-    var oldLink = document.getElementById('download-link');
-    if(oldLink) oldLink.remove();
 
     var anchor = document.createElement('a');
     anchor.setAttribute('id', "download-link");

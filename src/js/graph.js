@@ -1,27 +1,16 @@
-var MIN_RADIUS;
-var MAX_RADIUS;
-
-var MIN_FONT = 8;
-var MAX_FONT = 15;
-
-var MIN_ARROW = 2;
-var MAX_ARROW = 8;
-
-var GRAPH_HEIGHT_PERCENT = 0.90
-var GRAPH_WIDTH_PERCENT = .98
-
-var generateGraph = function(tableMap) {
+var generateGraph = function(dataMap) {
     clearGraph();
 
     var graphElement = document.getElementById('graph');
 
-    dataMap = cleanData(tableMap);
     setViewport();
 
     var dimension = new Dimension($('#graph').height(), $('#graph').width());
 
     var maxRevenue = _.max(dataMap, function(element) { return element.revenue;}).revenue;
     var minRevenue = _.min(getNonzeroElements(dataMap), function(element) { return element.revenue;}).revenue;
+
+    if(minRevenue == maxRevenue) minRevenue = 0;
 
     var revenue = {
         min : minRevenue,
@@ -30,20 +19,36 @@ var generateGraph = function(tableMap) {
 
     new ViewBuilder(dimension).buildView(graphElement);
 
+    if(_.size(dataMap) == 0) {
+        var noDataText = makeSVG('text', {
+             x: dimension.screenWidth / 2 + dimension.marginX,
+             y: dimension.screenHeight / 2 + dimension.topMarginY,
+             'text-anchor': 'middle',
+             'font-size': dimension.screenWidth / 50,
+             fill: '#FF0000'
+         });
+        noDataText.innerHTML = "NO DATA" ;
+        document.getElementById('graph').appendChild(noDataText);
+        return;
+    }
+
     var error = dimension.screenWidth;
     var threshold = dimension.screenWidth * 0.05;
-    while(error * error > threshold * threshold || error < 0) {
+    var loopCount = 0;
+    while((error * error > threshold * threshold || error < 0) && loopCount < 10) {
         var laneStart  = 0 + dimension.marginX;
         elementList = [];
         for(i = 0; i < 3; i++) {
             var filteredData = filterByDuration(dataMap, i, i + 1);
-            laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList);
+            laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList) + 5;
             drawLane(laneStart, (i + 1) + "+", dimension, elementList);
         }
         var filteredData = filterByDuration(dataMap, 3, 100);
         laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList);
         error = dimension.screenWidth - (laneStart - dimension.marginX);
         PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);
+        loopCount += 1;
+        if(_.size(dataMap) < 2) break;
     }
 
     drawBubbleScale(elementList, revenue, dimension);
@@ -61,28 +66,6 @@ var generateGraph = function(tableMap) {
             hidePopUp();
         }
     )
-}
-
-var getNumber = function(value) {
-    if(!value) value = "";
-    var number = parseInt(value.replace(/[a-zA-Z $,]*/g, ""));
-    if(isNaN(number)) {
-        return 0;
-    }
-    return number;
-}
-
-
-var cleanData = function(dataMap) {
-   return _.mapObject(dataMap,
-    function(element, key) {
-        element.revenue = getNumber(element.revenue);
-        element.CGM = getNumber(element.CGM);
-        element.duration = getNumber(element.duration);
-        element.trend = getNumber(element.trend);
-        return element;
-    }
-   );
 }
 
 var getRadius = function(value, minRevenue, maxRevenue) {
@@ -126,8 +109,8 @@ var getNonzeroElements = function(dataMap) {
     return _.filter(dataMap, function(element) { return element.revenue != 0;})
 }
 var setViewport = function() {
-        $("#graph").attr("height", $(document).height() * GRAPH_HEIGHT_PERCENT);
-        $("#graph").attr("width", $(document).width() * GRAPH_WIDTH_PERCENT);
+        $("#graph").attr("height", $(window).height() * GRAPH_HEIGHT_PERCENT);
+        $("#graph").attr("width", $(window).width() * GRAPH_WIDTH_PERCENT);
 }
 
 var getRegion = function(name) {
@@ -144,7 +127,7 @@ var clearGraph = function() {
 
 var plotLaneMembers = function(dataMap, dimension, laneStart, revenue, elementList) {
     var arrange = new Arrange();
-    var rightmostElement = new Location(0, 0, 0);
+    var rightmostElement = new Location(laneStart, 0, 0);
     _.each(dataMap,
         function(element){
 

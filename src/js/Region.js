@@ -1,4 +1,4 @@
-var RegionColor = function(){
+var Region = function(){
     this.regionColor = {
         usa: '#87b782',
         americas: '#ffb782',
@@ -14,6 +14,15 @@ var RegionColor = function(){
         gurgaon: '#f59a9f',
         chennai: '#66b983'
     };
+
+    this.getRegions = function() {
+        return _.keys(this.regionColor);
+    }
+
+
+    this.getOffices = function() {
+        return _.keys(this.officeColor);
+    }
 
     this.getRegionColor = function(region) {
         if(this.regionColor[region])

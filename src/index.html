@@ -7,11 +7,12 @@
     <script src="lib/jquery.csv-0.71.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="js/Dimension.js"></script>
-    <script src="js/RegionColor.js"></script>
+    <script src="js/Region.js"></script>
     <script src="js/Common.js"></script>
     <script src="js/ViewBuilder.js"></script>
     <script src="js/graph.js"></script>
     <script src="js/parse.js"></script>
+    <script src="js/filters.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
@@ -21,7 +22,10 @@
 </div>
 <div id="option">
     <input type="file" id="dataFile" />
-    <button onclick="readFile()">Generate</button>
+    <button onclick="filterAndGenerate()">Generate</button>
+
+    <select id="region-filter" class="hidden" onchange="filterAndGenerate()"></select>
+    <select id="office-filter" class="hidden" onchange="filterAndGenerate()"></select>
 </div>
 <div id="popup">
     <div id="project-name" class="header"></div>

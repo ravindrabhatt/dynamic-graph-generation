@@ -82,15 +82,15 @@ var makeSVG = function(tag, attrs) {
 };
 
 var createBubble = function(elementLocation, element) {
-    var regionColor = new RegionColor();
+    var region = new Region();
     return makeSVG(
         'circle',
         {
             cx: elementLocation.x,
             cy: elementLocation.y,
             r: elementLocation.r,
-            'stroke-width': 3, stroke: regionColor.getRegionColor(getRegion(element.region)),
-            fill: regionColor.getOfficeColor(getOffice(element.office)),
+            'stroke-width': 3, stroke: region.getRegionColor(getRegion(element.region)),
+            fill: region.getOfficeColor(getOffice(element.office)),
             class: "bubble region-" + getRegion(element.office) + " office-" + getOffice(element.office),
             project: element.name
         }
@@ -112,7 +112,7 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
 }
 
 var drawLegend = function(elementList, dimension) {
-    var region = new RegionColor();
+    var region = new Region();
     var xLocation = dimension.marginX + dimension.screenWidth * 0.06;
     var yLocation = dimension.topMarginY * 0.3;
     var width = dimension.screenWidth * 0.06;
