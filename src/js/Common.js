@@ -7,6 +7,8 @@ var MIN_ARROW;
 var MAX_ARROW;
 var GRAPH_HEIGHT_PERCENT;
 var GRAPH_WIDTH_PERCENT;
+var STROKE_WIDTH = 3;
+var PI = 3.14;
 
 var Location = function(x1, y1, r1) {
     var scope = this;

@@ -1,10 +1,12 @@
 "use strict";
 
 var storedData = null;
+var files = null;
 
 var filterAndGenerate = function() {
-    if(storedData == null) {
-        var files = document.getElementById("dataFile").files;
+    var newFiles = document.getElementById("dataFile").files;
+    if(storedData == null || newFiles != files) {
+        files = newFiles;
         var reader = new FileReader();
         reader.readAsText(files[0]);
         reader.onload = function(event) {
@@ -66,6 +68,8 @@ var createMap = function(dataArray) {
         map.CGM = element[indices.CGMIndex];
         map.duration = element[indices.durationIndex];
         map.trend = element[indices.trendIndex];
+        map.isPriority = element[indices.priorityIndex] &&
+            (element[indices.priorityIndex].toLowerCase() == "true" || element[indices.priorityIndex].toLowerCase() == "yes");
         dataMap[name] = map;
     }
     return dataMap;
@@ -81,6 +85,7 @@ var getIndices = function(headerRow) {
         indices.revenueIndex = _.indexOf(headerRow, "Revenue");
         indices.nameIndex = _.indexOf(headerRow, "Project");
         indices.trendIndex = _.indexOf(headerRow, "Trend");
+        indices.priorityIndex = _.indexOf(headerRow, "Priority");
         return indices;
 }
 

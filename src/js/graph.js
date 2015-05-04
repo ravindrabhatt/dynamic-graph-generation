@@ -147,6 +147,11 @@ var plotLaneMembers = function(dataMap, dimension, laneStart, revenue, elementLi
             elementList.push(bubble);
             elementList.push(nameText);
             elementList.push(trendArrow);
+
+            if(element.isPriority) {
+                var priorityStar = drawStar(getTrendDirection(element.trend), elementLocation.r / 5, elementLocation);
+                elementList.push(priorityStar);
+            }
         }
     )
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;
