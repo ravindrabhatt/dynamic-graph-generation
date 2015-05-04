@@ -70,6 +70,8 @@ var createMap = function(dataArray) {
         map.trend = element[indices.trendIndex];
         map.isPriority = element[indices.priorityIndex] &&
             (element[indices.priorityIndex].toLowerCase() == "true" || element[indices.priorityIndex].toLowerCase() == "yes");
+        map.isIMO = element[indices.IMOIndex] &&
+            (element[indices.IMOIndex].toLowerCase() == "true" || element[indices.IMOIndex].toLowerCase() == "yes");
         dataMap[name] = map;
     }
     return dataMap;
@@ -86,6 +88,7 @@ var getIndices = function(headerRow) {
         indices.nameIndex = _.indexOf(headerRow, "Project");
         indices.trendIndex = _.indexOf(headerRow, "Trend");
         indices.priorityIndex = _.indexOf(headerRow, "Priority");
+        indices.IMOIndex = _.indexOf(headerRow, "IMO");
         return indices;
 }
 

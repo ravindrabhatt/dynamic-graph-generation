@@ -152,6 +152,12 @@ var plotLaneMembers = function(dataMap, dimension, laneStart, revenue, elementLi
                 var priorityStar = drawStar(getTrendDirection(element.trend), elementLocation.r / 5, elementLocation);
                 elementList.push(priorityStar);
             }
+
+            if(element.isIMO) {
+                var IMOSymbolSide = elementLocation.r / 4;
+                var IMOSymbol = drawIMOSymbol(elementLocation.x + elementLocation.r / 2, elementLocation.y, IMOSymbolSide);
+                elementList.push(IMOSymbol);
+            }
         }
     )
     var laneEnd = rightmostElement.x + rightmostElement.r + PADDING;

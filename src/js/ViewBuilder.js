@@ -198,20 +198,50 @@ var drawLegend = function(elementList, dimension) {
             }
         )
     );
-    var radius = height / 3;
-    xLocation = xLocation + radius * 1.2;
-    elementList.push(drawStar(0, radius, {x: xLocation, y: yLocation + height / 2, r: height}));
+    var radius = height / 5;
+    elementList.push(drawStar(0, radius, {x: xLocation + radius * 2, y: yLocation + height / 2, r: height}));
 
-    xLocation = xLocation + radius;
     var priorityText = makeSVG('text', {
-        x: xLocation + radius / 2,
+        x: xLocation + radius * 2 + (width - radius * 2) / 2,
         y: yLocation + height / 2,
+        'text-anchor': 'middle',
         'dominant-baseline': 'central',
         'font-size': 10,
         fill: '#000000'
     });
     priorityText.innerHTML = "PRIORITY";
     elementList.push(priorityText);
+
+    xLocation = xLocation + offset
+
+    elementList.push(
+        makeSVG(
+            'rect',
+            {
+                x: xLocation,
+                y: yLocation,
+                width: width,
+                height: height,
+                stroke: "#888888",
+                'stroke-width': 1,
+                fill: "#BBBBBB"
+            }
+        )
+    );
+
+    var IMOSide = height / 3;
+    elementList.push(drawIMOSymbol(xLocation + IMOSide * 2, yLocation + height / 2, IMOSide));
+
+    var IMOText = makeSVG('text', {
+        x: xLocation + IMOSide * 2 + (width - IMOSide * 2) / 2,
+        y: yLocation + height / 2,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': 10,
+        fill: '#000000'
+    });
+    IMOText.innerHTML = "IMO";
+    elementList.push(IMOText);
 }
 
 var drawBubbleScale = function(elementList, revenue, dimension) {
@@ -339,4 +369,15 @@ var drawStar = function(direction, radius, elementLocation) {
             stroke: '#880000'
         }
     );
+}
+
+var drawIMOSymbol = function(x, y, IMOSymbolSide) {
+    return makeSVG('rect', {
+        x: x - IMOSymbolSide / 2,
+        y: y - IMOSymbolSide / 2,
+        width: IMOSymbolSide,
+        height: IMOSymbolSide,
+        stroke: '#000000',
+        fill: '#888888'
+    })
 }
