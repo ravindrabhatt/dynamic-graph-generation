@@ -105,7 +105,7 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
     var nameArray = element.name.replace(' - ', ' ').split(' ');
     for(var i in nameArray) {
         var tspan = makeSVG('tspan',{x: elementLocation.x, dy: (i == 0 ? 0 : fontSize)});
-        tspan.innerHTML = nameArray[i];
+        tspan.innerHTML = nameArray[i].substring(0, 10);
         nameText.appendChild(tspan);
     }
     return nameText;
@@ -128,7 +128,8 @@ var drawLegend = function(elementList, dimension) {
                     y: yLocation,
                     width: width,
                     height: height,
-                    fill: color
+                    fill: color,
+                    stroke: '#888888'
                 }
             )
         );
@@ -141,7 +142,7 @@ var drawLegend = function(elementList, dimension) {
                 'text-anchor': 'middle',
                 'font-size': 10,
                 'dominant-baseline': 'central',
-                fill: "#FFFFFF"
+                fill: "#000000"
             }
         );
 

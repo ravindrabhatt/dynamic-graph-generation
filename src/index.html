@@ -23,9 +23,10 @@
 <div id="option">
     <input type="file" id="dataFile" />
     <button onclick="filterAndGenerate()">Generate</button>
-
-    <select id="region-filter" class="hidden" onchange="filterAndGenerate()"></select>
-    <select id="office-filter" class="hidden" onchange="filterAndGenerate()"></select>
+</div>
+<div id="filters" class="hidden">
+    <span>Filter By Region: </span><select id="region-filter" onchange="filterAndGenerate()"></select>
+    <span>Filter By Office: </span><select id="office-filter" onchange="filterAndGenerate()"></select>
 </div>
 <div id="popup">
     <div id="project-name" class="header"></div>

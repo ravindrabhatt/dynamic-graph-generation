@@ -8,8 +8,19 @@
 
 #option {
     padding: 10px;
+    display: inline-block;
+    font-size: 14px;
 }
 
+#filters {
+    padding: 10px;
+    display: inline-block;
+    font-size: 14px;
+    float: right;
+}
+#filters span {
+    padding: 20px;
+}
 .pointer-top-left {
     border-radius: 0px 10px 10px 10px;
     box-shadow: 6px 6px 10px #888888;
@@ -41,4 +52,8 @@
 
 .hidden {
     visibility: hidden;
+}
+
+.inline {
+    display: inline;
 }

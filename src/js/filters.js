@@ -10,8 +10,6 @@ var buildFilters = function() {
         regionFilter.add(option);
     }
 
-    regionFilter.style.visibility="visible";
-
     var offices = region.getOffices();
     offices.splice(0, 0, "All");
     var officeFilter = document.getElementById('office-filter');
@@ -21,6 +19,5 @@ var buildFilters = function() {
         officeFilter.add(option);
     }
 
-    officeFilter.style.visibility="visible";
-
+    document.getElementById('filters').style.visibility="visible";
 }
