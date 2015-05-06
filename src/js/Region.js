@@ -1,7 +1,7 @@
 var Region = function(){
-    this.regionColor = regions;
+    this.regionColor = _.object(_.map(regions, function(value, key) {return key.toLowerCase();}), _.values(regions));
 
-    this.officeColor = offices;
+    this.officeColor = _.object(_.map(offices, function(value, key) {return key.toLowerCase();}), _.values(offices));
 
     this.getRegions = function() {
         return _.keys(this.regionColor);
