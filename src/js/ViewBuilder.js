@@ -247,11 +247,16 @@ var drawLegend = function(elementList, dimension) {
 
 var drawBubbleScale = function(elementList, revenue, dimension) {
     var revenueRange = revenue.max - revenue.min;
-    var roundedMax = Math.pow(10, revenue.max.toString().length);
-    if(roundedMax - revenue.max > revenue.max - roundedMax / 2) roundedMax = roundedMax / 2;
-    for(var scale = 20; scale < 100; scale += 20) {
+    var floorMax = Math.pow(10, revenue.max.toString().length) / 10;
+    var roundedMax = 0;
+    for(i = 0; i <= 10; i++) {
+        if(Math.abs(roundedMax - revenue.max) > Math.abs(floorMax * i - revenue.max)) {
+            roundedMax = floorMax * i;
+        }
+    }
+    for(var scale = 20; scale <= 100; scale += 20) {
         var radius = getRadius(roundedMax * scale / 100, revenue.min, revenue.max);
-        console.log(roundedMax * scale / 100);
+        if(radius < 0) continue;
         elementList.push(
             makeSVG(
                 'circle',
