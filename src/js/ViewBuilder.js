@@ -102,12 +102,7 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
     var nameText = makeSVG('text',{x: elementLocation.x, y: elementLocation.y + elementLocation.r + fontSize + STROKE_WIDTH,
                             class: "account-name", 'font-size': fontSize, 'text-anchor': 'middle'});
 
-    var nameArray = element.name.replace(' - ', ' ').split(' ');
-    for(var i in nameArray) {
-        var tspan = makeSVG('tspan',{x: elementLocation.x, dy: (i == 0 ? 0 : fontSize)});
-        tspan.innerHTML = nameArray[i].substring(0, 10);
-        nameText.appendChild(tspan);
-    }
+    nameText.innerHTML = element.name.substring(0, 15);
     return nameText;
 }
 
