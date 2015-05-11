@@ -10,6 +10,8 @@ var generateGraph = function(dataMap) {
     var maxRevenue = _.max(dataMap, function(element) { return element.revenue;}).revenue;
     var minRevenue = _.min(getNonzeroElements(dataMap), function(element) { return element.revenue;}).revenue;
 
+    var maxDuration = _.max(dataMap, function(element) { return element.duration;}).duration;
+
     if(minRevenue == maxRevenue) minRevenue = 0;
 
     var revenue = {
@@ -38,12 +40,12 @@ var generateGraph = function(dataMap) {
     while((error * error > threshold * threshold || error < 0) && loopCount < 10) {
         var laneStart  = 0 + dimension.marginX;
         elementList = [];
-        for(i = 0; i < 3; i++) {
+        for(i = 0; i < maxDuration; i++) {
             var filteredData = filterByDuration(dataMap, i, i + 1);
             laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList) + 5;
             drawLane(laneStart, (i + 1) + "+", dimension, elementList);
         }
-        var filteredData = filterByDuration(dataMap, 3, 100);
+        var filteredData = filterByDuration(dataMap, maxDuration, 100);
         laneStart = plotLaneMembers(filteredData, dimension, laneStart, revenue, elementList);
         error = dimension.screenWidth - (laneStart - dimension.marginX);
         PADDING = PADDING * (1 + 2 * error / dimension.screenWidth);

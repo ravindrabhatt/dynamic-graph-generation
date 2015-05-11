@@ -108,10 +108,13 @@ var createBubbleCaption = function(elementLocation, element, revenue) {
 
 var drawLegend = function(elementList, dimension) {
     var region = new Region();
-    var xLocation = dimension.marginX + dimension.screenWidth * 0.06;
-    var yLocation = dimension.topMarginY * 0.3;
+    var legendOverflow = region.getRegions().length + region.getOffices().length > 12;
+
+    var startLocation = dimension.marginX;
+    var xLocation = startLocation;
+    var yLocation = dimension.topMarginY * (legendOverflow ? 0.15 : 0.3);
     var width = dimension.screenWidth * 0.06;
-    var height = dimension.topMarginY * 0.4;
+    var height = dimension.topMarginY * (legendOverflow ? 0.3 : 0.4);
     var offset = dimension.screenWidth * 0.07;
 
     _.each(region.regionColor, function(color, region) {
@@ -135,7 +138,7 @@ var drawLegend = function(elementList, dimension) {
                 x: xLocation + width / 2,
                 y: yLocation + height / 2,
                 'text-anchor': 'middle',
-                'font-size': 10,
+                'font-size': dimension.screenWidth / 120,
                 'dominant-baseline': 'central',
                 fill: "#000000"
             }
@@ -147,6 +150,10 @@ var drawLegend = function(elementList, dimension) {
         xLocation += offset;
     });
 
+    if(legendOverflow) {
+        xLocation = startLocation;
+        yLocation = dimension.topMarginY * 0.55;
+    }
     _.each(region.officeColor, function(color, office){
         elementList.push(
             makeSVG(
@@ -168,7 +175,7 @@ var drawLegend = function(elementList, dimension) {
                 x: xLocation + width / 2,
                 y: yLocation + height / 2,
                 'text-anchor': 'middle',
-                'font-size': 10,
+                'font-size': dimension.screenWidth / 120,
                 'dominant-baseline': 'central',
                 fill: color
             }
@@ -180,6 +187,9 @@ var drawLegend = function(elementList, dimension) {
         xLocation += offset;
     })
 
+    xLocation = dimension.marginX + dimension.screenWidth * 0.86;
+    yLocation = dimension.topMarginY * 0.3;
+    height = dimension.topMarginY * 0.4;
     elementList.push(
         makeSVG(
             'rect',

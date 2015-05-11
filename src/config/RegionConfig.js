@@ -1,6 +1,8 @@
 var regions = {
     americas: '#ffb782',
     eu: '#fde0cf',
-    india: '#ff8888',
-    apac: '#fffa81'
+    apac: '#fffa81',
+    GIC: '#8800FF',
+    SIP: '#8899AA',
+    IBH: '#885533'
 }
